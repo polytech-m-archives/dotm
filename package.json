@@ -1,0 +1,20 @@
+{
+  "name": "dotm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --exec \"node -r dotenv/config index.js\""
+  },
+  "devDependencies": {
+    "dotenv": "^11.0.0",
+    "nodemon": "^2.0.15"
+  },
+  "repository": "git@github.com:polytech-m-archives/dotm.git",
+  "author": "iverly <iverly.dev@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "luxon": "^2.3.0",
+    "mongodb": "^4.3.0"
+  }
+}
