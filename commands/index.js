@@ -2,8 +2,9 @@ const { getDatabase, closeDatabase } = require('../utils/connector');
 const { findProject, createProject, addEntry } = require('../utils/query');
 
 const getCommand = require('./get');
-const hashCommand = require('./get');
-const reportCommand = require('./get');
+const hashCommand = require('./hash');
+const reportCommand = require('./report');
+const { extractHashtags } = require('../utils/hashtags');
 
 const defaultHandler = {
   handler: async (args) => {
@@ -18,19 +19,20 @@ const defaultHandler = {
     
     const projectName = args[1];
     const comment = args.splice(2, args.length).join(' ');
+    const hashtags = extractHashtags(comment);
 
     const db = await getDatabase();
     
     // try find project and create if necessary
     const project = await findProject(projectName, db);
-    console.log(project);
     if (!project) {
       await createProject(projectName, db);
     }
 
     // add new entry to our project
-    await addEntry(projectName, new Date(), minutes, comment, [], db);
+    await addEntry(projectName, new Date(), minutes, comment, hashtags, db);
 
+    console.log('Added new entry to the project');
     closeDatabase();
   }
 }

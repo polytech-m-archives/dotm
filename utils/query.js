@@ -86,9 +86,50 @@ const findEntries = async (date, name, db) => {
   return await projects.aggregate(agg);
 }
 
+const findHashtags = async (hashtag, name, db) => {
+  const projects = db.collection('projects');
+
+  const agg = [
+    {
+      '$unwind': {
+        'path': '$entries',
+        'preserveNullAndEmptyArrays': false
+      }
+    }, {
+      '$project': {
+        'date': '$entries.date',
+        'minutes': '$entries.minutes',
+        'hashtags': '$entries.hashtags'
+      }
+    }, {
+      '$match': {
+        'hashtags': hashtag
+      }
+    }, {
+      '$group': {
+        '_id': {},
+        'count': {
+          '$sum': '$minutes'
+        }
+      }
+    }
+  ];
+
+  if (name) {
+    agg.unshift({
+      $match: {
+        name
+      }
+    });
+  }
+
+  return await projects.aggregate(agg);
+}
+
 module.exports = {
   findProject,
   createProject,
   addEntry,
   findEntries,
+  findHashtags,
 }
