@@ -89,31 +89,68 @@ const findEntries = async (date, name, db) => {
 const findHashtags = async (hashtag, name, db) => {
   const projects = db.collection('projects');
 
-  const agg = [
-    {
-      '$unwind': {
-        'path': '$entries',
-        'preserveNullAndEmptyArrays': false
-      }
-    }, {
-      '$project': {
-        'date': '$entries.date',
-        'minutes': '$entries.minutes',
-        'hashtags': '$entries.hashtags'
-      }
-    }, {
-      '$match': {
-        'hashtags': hashtag
-      }
-    }, {
-      '$group': {
-        '_id': {},
-        'count': {
-          '$sum': '$minutes'
-        }
+  const agg = [{
+    '$unwind': {
+      'path': '$entries',
+      'preserveNullAndEmptyArrays': false
+    }
+  }, {
+    '$project': {
+      'date': '$entries.date',
+      'minutes': '$entries.minutes',
+      'hashtags': '$entries.hashtags'
+    }
+  }, {
+    '$match': {
+      'hashtags': hashtag
+    }
+  }, {
+    '$group': {
+      '_id': {},
+      'count': {
+        '$sum': '$minutes'
       }
     }
-  ];
+  }];
+
+  if (name) {
+    agg.unshift({
+      $match: {
+        name
+      }
+    });
+  }
+
+  return await projects.aggregate(agg);
+}
+
+const findDailyReport = async (name, db) => {
+  const projects = db.collection('projects');
+
+  const agg = [{
+    '$unwind': {
+      'path': '$entries',
+      'preserveNullAndEmptyArrays': false
+    }
+  }, {
+    '$project': {
+      date: {
+        $dateToString: {
+          format: "%Y-%m-%d",
+          date: "$entries.date"
+        }
+      },
+      'minutes': '$entries.minutes',
+      'hashtags': '$entries.hashtags'
+    }
+  }, {
+    '$group': {
+      '_id': "$date",
+      'count': {
+        '$sum': '$minutes'
+      }
+    }
+  }];
 
   if (name) {
     agg.unshift({
@@ -132,4 +169,5 @@ module.exports = {
   addEntry,
   findEntries,
   findHashtags,
+  findDailyReport,
 }
