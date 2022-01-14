@@ -1,8 +1,6 @@
 const { parseTimeInput, parseDateInput, parseInput } = require('../utils/parser');
 const { DateTime } = require('luxon');
-
-const today = DateTime.fromFormat(DateTime.now().toFormat('MM-dd-yyyy'), 'MM-dd-yyyy');
-const yesterday = DateTime.fromISO(today.toISO()).minus({ day: 1 });
+const { today, yesterday } = require('../utils/constant');
 
 describe('test intelligent guesses from time input', () => {
 
@@ -152,21 +150,21 @@ describe('test intelligent guesses from date input', () => {
   });
 
   it('should understand "2/5"', () => {
-    const { valid, date } = parseDateInput('2/5', DateTime.fromISO('2021-01-14T00:00:00+02:00Z'));
+    const { valid, date } = parseDateInput('2/5', DateTime.fromISO('2021-01-14T00:00:00Z', { zone: 'UTC' }));
     expect(valid).toBe(true);
-    expect(date.toISO()).toBe(DateTime.fromISO('2021-02-05T00:00:00+02:00Z').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2021-02-05T00:00:00Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "2/5/2022"', () => {
     const { valid, date } = parseDateInput('2/5/2022');
     expect(valid).toBe(true);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-02-05T00:00:00.000+01:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-02-05T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "December 12"', () => {
     const { valid, date } = parseDateInput('December 12');
     expect(valid).toBe(true);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-12-12T00:00:00.000+01:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-12-12T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
 });
@@ -202,52 +200,52 @@ describe('test intelligent guesses from input', () => {
   });
 
   it('should understand "Thurs, 2:45"', () => {
-    const { valid, date, minutes } = parseInput('Thurs, 2:45', undefined, DateTime.fromISO('2022-01-14T00:00:00Z'));
+    const { valid, date, minutes } = parseInput('Thurs, 2:45', undefined, DateTime.fromISO('2022-01-14T00:00:00Z', { zone: 'UTC' }));
     expect(valid).toBe(true);
     expect(minutes).toBe(165);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-01-13T00:00:00Z').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-01-13T00:00:00Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "Oct 21, 0.5"', () => {
     const { valid, date, minutes } = parseInput('Oct 21, 0.5');
     expect(valid).toBe(true);
     expect(minutes).toBe(30);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000+02:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "Oct 21 0.5"', () => {
     const { valid, date, minutes } = parseInput('Oct 21 0.5');
     expect(valid).toBe(true);
     expect(minutes).toBe(30);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000+02:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "Oct 21 .5"', () => {
     const { valid, date, minutes } = parseInput('Oct 21 .5');
     expect(valid).toBe(true);
     expect(minutes).toBe(30);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000+02:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "2/5, 2pm-4pm"', () => {
     const { valid, date, minutes } = parseInput('2/5, 2pm-4pm');
     expect(valid).toBe(true);
     expect(minutes).toBe(120);
-    expect(date.toISO()).toBe(DateTime.fromISO('2022-02-05T00:00:00.000+01:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-02-05T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "1/1/2017, 2h"', () => {
     const { valid, date, minutes } = parseInput('1/1/2017, 2h');
     expect(valid).toBe(true);
     expect(minutes).toBe(120);
-    expect(date.toISO()).toBe(DateTime.fromISO('2017-01-01T00:00:00.000+01:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2017-01-01T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "1/1/2017 2h"', () => {
     const { valid, date, minutes } = parseInput('1/1/2017 2h');
     expect(valid).toBe(true);
     expect(minutes).toBe(120);
-    expect(date.toISO()).toBe(DateTime.fromISO('2017-01-01T00:00:00.000+01:00').toISO());
+    expect(date.toISO()).toBe(DateTime.fromISO('2017-01-01T00:00:00.000Z', { zone: 'UTC' }).toISO());
   });
 
   it('should understand "9 to"', () => {

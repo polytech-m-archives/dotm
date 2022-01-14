@@ -2,10 +2,10 @@ const {
   DateTime
 } = require('luxon');
 
-const today = DateTime.fromFormat(DateTime.now().toFormat('MM-dd-yyyy'), 'MM-dd-yyyy');
+const today = DateTime.fromFormat(DateTime.now().toUTC().toFormat('MM-dd-yyyy'), 'MM-dd-yyyy', { zone: 'UTC' }).toUTC();
 const yesterday = DateTime.fromISO(today).minus({
   day: 1
-});
+}).toUTC();
 
 const daysOfTheWeek = [
   'Monday',
