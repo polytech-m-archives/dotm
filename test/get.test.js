@@ -14,12 +14,12 @@ describe('test get entries with time parameter', () => {
     const collection = db.collection('projects');
     await collection.deleteMany({});
 
-    await query.createProject('jest-test', db);
-    await query.addEntry('jest-test', DateTime.now(), 15, 'Working on my #project', [], db);
-    await query.addEntry('jest-test', DateTime.now(), 50, 'Working on my #mongodb #fun', [], db);
+    await query.createProject('jest-test-get', db);
+    await query.addEntry('jest-test-get', DateTime.now(), 15, 'Working on my #project', [], db);
+    await query.addEntry('jest-test-get', DateTime.now(), 50, 'Working on my #mongodb #fun', [], db);
 
-    await query.createProject('jest-test-2', db);
-    await query.addEntry('jest-test-2', DateTime.now(), 25, 'Working on my #project', [], db);
+    await query.createProject('jest-test-get-2', db);
+    await query.addEntry('jest-test-get-2', DateTime.now(), 25, 'Working on my #project', [], db);
   });
 
   it('should return nothing with an older date', async () => {
@@ -64,8 +64,10 @@ describe('test get entries with time parameter', () => {
     expect(count).toBe(90);
   });
 
-  afterAll(() => {
-    connector.closeDatabase()
+  afterAll(async () => {
+    const collection = db.collection('projects');
+    await collection.deleteMany({});
+    connector.closeDatabase();
   });
 });
 
@@ -77,19 +79,19 @@ describe('test get entries with time and project parameters', () => {
     const collection = db.collection('projects');
     await collection.deleteMany({});
 
-    await query.createProject('jest-test', db);
-    await query.addEntry('jest-test', DateTime.now(), 15, 'Working on my #project', [], db);
-    await query.addEntry('jest-test', DateTime.now(), 50, 'Working on my #mongodb #fun', [], db);
+    await query.createProject('jest-test-get-2', db);
+    await query.addEntry('jest-test-get-2', DateTime.now(), 15, 'Working on my #project', [], db);
+    await query.addEntry('jest-test-get-2', DateTime.now(), 50, 'Working on my #mongodb #fun', [], db);
 
-    await query.createProject('jest-test-2', db);
-    await query.addEntry('jest-test-2', DateTime.now(), 25, 'Working on my #project', [], db);
+    await query.createProject('jest-test-get-2-2', db);
+    await query.addEntry('jest-test-get-2-2', DateTime.now(), 25, 'Working on my #project', [], db);
   });
 
   it('should return nothing with an older date', async () => {
     let entries;
     
     try {
-      entries = await query.findEntries(today.minus({ day: 1 }), 'jest-test', db);
+      entries = await query.findEntries(today.minus({ day: 1 }), 'jest-test-get', db);
     } catch(err) {
       expect(err).toBe(undefined);
     }
@@ -101,7 +103,7 @@ describe('test get entries with time and project parameters', () => {
     let cursor;
    
     try {
-      cursor = await query.findEntries(today, 'jest-test', db);
+      cursor = await query.findEntries(today, 'jest-test-get-2', db);
     } catch(err) {
       expect(err).toBe(undefined);
     }
@@ -114,7 +116,7 @@ describe('test get entries with time and project parameters', () => {
     let cursor;
    
     try {
-      cursor = await query.findEntries(today, 'jest-test', db);
+      cursor = await query.findEntries(today, 'jest-test-get-2', db);
     } catch(err) {
       expect(err).toBe(undefined);
     }
@@ -127,7 +129,9 @@ describe('test get entries with time and project parameters', () => {
     expect(count).toBe(65);
   });
 
-  afterAll(() => {
-    connector.closeDatabase()
+  afterAll(async () => {
+    const collection = db.collection('projects');
+    await collection.deleteMany({});
+    connector.closeDatabase();
   });
 });

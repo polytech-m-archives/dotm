@@ -32,6 +32,11 @@ const calculateTimeBetweenHours = (list) => {
   return Math.abs(list[0] - list[1]);
 }
 
+const toHours = (input) => {
+  if (parseFloat(input) < 1) input = `0${input}`;
+  return input;
+}
+
 module.exports = {
   isNumeric,
   roundUp,
@@ -39,4 +44,5 @@ module.exports = {
   checkNumericWithUnit,
   parseNumericWithUnit,
   calculateTimeBetweenHours,
+  toHours,
 }

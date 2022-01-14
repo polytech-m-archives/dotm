@@ -11,12 +11,15 @@ const {
   roundUp,
   parseNumeric,
   calculateTimeBetweenHours,
+  toHours,
+  isNumeric,
 } = require('./number');
 
 const {
   computeNumberOfDays,
   subtract,
   findNumberOfMonth,
+  isMonth,
 } = require('./date');
 
 const parseDateInput = (input, currentDay = today) => {
@@ -144,9 +147,7 @@ const parseInput = (input, currentTime = DateTime.now(), currentDate = today) =>
       minutes = timeParsed.minutes;
       valid = true;
     }
-  }
-
-  if (input.includes(',')) {
+  } else if (input.includes(',')) {
     let split = input.split(',').map((item) => item.trim());
     const dateParsed = parseDateInput(split[0], currentDate);
     if (dateParsed) {
@@ -159,6 +160,43 @@ const parseInput = (input, currentTime = DateTime.now(), currentDate = today) =>
         const timeParsed = parseTimeInput(input, currentTime);
         if (timeParsed) {
           date = dateParsed.date;
+          minutes = timeParsed.minutes;
+          valid = true;
+        }
+      }
+    }
+  } else {
+    let split = input.split(/\s+/g).map((item) => item.trim());
+    if (isMonth(split[0])) {
+      const dateParsed = parseDateInput(split.slice(0, 2).join(' '), currentDate);
+      if (dateParsed) {
+        const timeParsed = parseTimeInput(toHours(split.slice(2).join(' ')), currentTime);
+        if (timeParsed) {
+          date = dateParsed.date;
+          minutes = timeParsed.minutes;
+          valid = true;
+        }
+      }
+    } else {
+      if (split[0].includes('/') || (split.length > 1 && !isNumeric(split[0].split('')[0]))) {
+        const dateParsed = parseDateInput(split[0], currentDate);
+        if (dateParsed) {
+          const timeParsed = parseTimeInput(toHours(split.slice(1).join(' ')), currentTime);
+          if (timeParsed) {
+            date = dateParsed.date;
+            minutes = timeParsed.minutes;
+            valid = true;
+          }
+        }
+      } else if (split.length > 1) {
+        const timeParsed = parseTimeInput(toHours(split.join(' ')), currentTime);
+        if (timeParsed) {
+          minutes = timeParsed.minutes;
+          valid = true;
+        }
+      } else {
+        const timeParsed = parseTimeInput(input, currentTime);
+        if (timeParsed) {
           minutes = timeParsed.minutes;
           valid = true;
         }

@@ -194,6 +194,13 @@ describe('test intelligent guesses from input', () => {
     expect(minutes).toBe(15);
   });
 
+  it('should understand "yesterday, 14"', () => {
+    const { valid, date, minutes } = parseInput('yesterday, 14');
+    expect(valid).toBe(true);
+    expect(date.toISO()).toBe(yesterday.toISO());
+    expect(minutes).toBe(15);
+  });
+
   it('should understand "Thurs, 2:45"', () => {
     const { valid, date, minutes } = parseInput('Thurs, 2:45', undefined, DateTime.fromISO('2022-01-14T00:00:00Z'));
     expect(valid).toBe(true);
@@ -203,6 +210,20 @@ describe('test intelligent guesses from input', () => {
 
   it('should understand "Oct 21, 0.5"', () => {
     const { valid, date, minutes } = parseInput('Oct 21, 0.5');
+    expect(valid).toBe(true);
+    expect(minutes).toBe(30);
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000+02:00').toISO());
+  });
+
+  it('should understand "Oct 21 0.5"', () => {
+    const { valid, date, minutes } = parseInput('Oct 21 0.5');
+    expect(valid).toBe(true);
+    expect(minutes).toBe(30);
+    expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000+02:00').toISO());
+  });
+
+  it('should understand "Oct 21 .5"', () => {
+    const { valid, date, minutes } = parseInput('Oct 21 .5');
     expect(valid).toBe(true);
     expect(minutes).toBe(30);
     expect(date.toISO()).toBe(DateTime.fromISO('2022-10-21T00:00:00.000+02:00').toISO());
@@ -220,6 +241,27 @@ describe('test intelligent guesses from input', () => {
     expect(valid).toBe(true);
     expect(minutes).toBe(120);
     expect(date.toISO()).toBe(DateTime.fromISO('2017-01-01T00:00:00.000+01:00').toISO());
+  });
+
+  it('should understand "1/1/2017 2h"', () => {
+    const { valid, date, minutes } = parseInput('1/1/2017 2h');
+    expect(valid).toBe(true);
+    expect(minutes).toBe(120);
+    expect(date.toISO()).toBe(DateTime.fromISO('2017-01-01T00:00:00.000+01:00').toISO());
+  });
+
+  it('should understand "9 to"', () => {
+    const { valid, date, minutes } = parseInput('9 to', today.plus({ hours: '10' }));
+    expect(valid).toBe(true);
+    expect(date.toISO()).toBe(today.toISO());
+    expect(minutes).toBe(60);
+  });
+
+  it('should understand "Friday .99"', () => {
+    const { valid, date, minutes } = parseInput('Friday .99', undefined, DateTime.fromISO('2022-01-14T00:00:00Z'));
+    expect(valid).toBe(true);
+    expect(date.toISO()).toBe(today.toISO());
+    expect(minutes).toBe(60);
   });
 
 });

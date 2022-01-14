@@ -36,10 +36,16 @@ const computeNumberOfDays = (currentDay, input) => {
   return findNumberOfDays(currentDay, input, array);
 }
 
+const isMonth = (input) => {
+  input = input.toLowerCase();
+  return months.includes(input) || shortMonths.includes(input);
+}
+
 module.exports = {
   computeNumberOfDays,
   findNumberOfDays,
   findNumberOfMonths,
   findNumberOfMonth,
   subtract,
+  isMonth,
 }

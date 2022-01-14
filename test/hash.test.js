@@ -10,11 +10,11 @@ describe('test hashtags entries without project parameter', () => {
   beforeAll(async () => {
     db = await connector.getDatabase();
     const collection = db.collection('projects');
-    await collection.deleteMany({});
+    await collection.deleteMany({ name: 'jest-test-hash' });
 
-    await query.createProject('jest-test', db);
-    await query.addEntry('jest-test', DateTime.now(), 15, 'Working on my #project', ['project'], db);
-    await query.addEntry('jest-test', DateTime.now(), 50, 'Working on my #mongodb #project', ['mongodb', 'project'], db);
+    await query.createProject('jest-test-hash', db);
+    await query.addEntry('jest-test-hash', DateTime.now(), 15, 'Working on my #project', ['project'], db);
+    await query.addEntry('jest-test-hash', DateTime.now(), 50, 'Working on my #mongodb #project', ['mongodb', 'project'], db);
   });
 
   it('should return nothing with non existing hashtag', async () => {
@@ -76,7 +76,9 @@ describe('test hashtags entries without project parameter', () => {
     expect(count).toBe(50);
   });
 
-  afterAll(() => {
-    connector.closeDatabase()
+  afterAll(async () => {
+    const collection = db.collection('projects');
+    await collection.deleteMany({});
+    connector.closeDatabase();
   });
 })
