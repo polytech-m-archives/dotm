@@ -4,10 +4,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "test": "jest --verbose",
     "dev": "nodemon --exec \"node -r dotenv/config index.js\""
   },
   "devDependencies": {
+    "@types/jest": "^27.4.0",
     "dotenv": "^11.0.0",
+    "jest": "^27.4.7",
     "nodemon": "^2.0.15"
   },
   "repository": "git@github.com:polytech-m-archives/dotm.git",
