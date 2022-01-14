@@ -9,8 +9,8 @@ const { extractHashtags } = require('../utils/hashtags');
 
 const defaultHandler = {
   handler: async (args) => {
-    if (args.length < 3) {
-      console.log('Usage: time project comment');
+    if (args.length < 2) {
+      console.log('Usage: time project [comment]');
       return;
     }
 

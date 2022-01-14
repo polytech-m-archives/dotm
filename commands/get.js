@@ -9,6 +9,7 @@ const {
   DateTime,
   Duration
 } = require('luxon');
+const { parseDateInput } = require('../utils/parser');
 
 module.exports = {
   name: 'get',
@@ -19,7 +20,12 @@ module.exports = {
     }
 
     // todo: parse date
-    const date = DateTime.fromISO(args[1]);
+    const { valid, date } = parseDateInput(args[1]);
+    if (!valid) {
+      console.log('Incorrect type for date, please try again');
+      return;
+    }
+
     const db = await getDatabase();
 
     // find all entries in the database
